@@ -1,8 +1,10 @@
 //Importações
 const express = require('express');
+const jwt = require('jsonwebtoken');
 var router = express.Router();
 const helpers = require('../helpers/helper');
 const helper = require('../helpers/helper');
+const { validaToken } = require('../helpers/middlewares');
 
 //Rota inicial
 router.get('/', (req, res) => {
@@ -22,8 +24,23 @@ router.post('/registrar', async (req, res) => {
     }
 })
 
+//Rota para login
+router.post('/login', async (req, res) => {
+    const {email, senha} = req.body;
+    try{
+        const secret = process.env.SECRET;
+        const token = jwt.sign({
+            email: email
+        }, secret)
+        res.status(200).json({msg:"Autenticacao realizada com sucesso", token})
+    } catch(error){
+        console.log(error);
+        return res.status(500).json({msg: "Token não foi criado"});
+    }
+})
+
 //Rota para exclusão de usuário
-router.delete('/delete/:email', async(req, res) => {
+router.delete('/delete/:email', validaToken, async(req, res) => {
     try{
         const delUser = await helpers.deleteUser(req.params.email)
         return res.status(200).json({msg: "Excluído com sucesso!", user: delUser});
