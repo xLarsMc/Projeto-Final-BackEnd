@@ -3,8 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 var router = express.Router();
 const helpers = require('../helpers/helper');
-const helper = require('../helpers/helper');
-const { validaToken } = require('../helpers/middlewares');
+const { validaToken, validaCriaUser } = require('../helpers/middlewares');
 
 //Rota inicial
 router.get('/', (req, res) => {
@@ -12,7 +11,7 @@ router.get('/', (req, res) => {
 })
 
 //Rota para registro de usuário
-router.post('/registrar', async (req, res) => {
+router.post('/registrar', validaCriaUser, async (req, res) => {
     const {nome, idade, email, senha} = req.body;
     try{
         const newUser = await helpers.newUser(nome, idade, email, senha);
