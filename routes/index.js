@@ -3,7 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 var router = express.Router();
 const helpers = require('../helpers/helper');
-const { validaToken, validaCriaUser, isAdmin, checkPassEmail } = require('../helpers/middlewares');
+const { validaToken, validaCriaUser, isAdmin, checkPassEmail, validaCriaAdmin } = require('../helpers/middlewares');
 
 //Rota inicial
 router.get('/', (req, res) => {
@@ -23,23 +23,44 @@ router.post('/registrar', validaCriaUser, async (req, res) => {
     }
 })
 
+//Rota para registro de um admin
+router.post('/registrarAdmin', validaToken, isAdmin, validaCriaAdmin, async (req, res) => {
+    const {nome, idade, email, senha} = req.body;
+    try{
+        const newUser = await helpers.newUser(nome, idade, email, senha);
+        console.log(newUser)
+        return res.status(200).json({msg: "Cadastrado", user: newUser});
+    } catch(error){
+        console.log(error);
+        return res.status(500).json({msg: "Um erro aconteceu!"});
+    }
+})
+
 //Rota para login
 router.post('/login', checkPassEmail, async (req, res) => {
     const {email, senha} = req.body;
     const user = await helpers.getUserByEmail(email);
     try{
         const secret = process.env.SECRET;
-        const token = jwt.sign({
-            email: email
-        }, secret)
-        res.status(200).json({msg:"Autenticacao realizada com sucesso", token})
-    } catch(error){
+        if(email.includes("@admin")){
+            let token = jwt.sign({
+                email:email,
+                isAdmin: true
+            }, secret)
+            res.status(200).json({msg:"Autenticacao realizada com sucesso - admin", token})
+        } else{
+            const token = jwt.sign({
+                email: email
+            }, secret)
+            res.status(200).json({msg:"Autenticacao realizada com sucesso", token})
+        }
+    }catch (error){
         console.log(error);
         return res.status(500).json({msg: "Token não foi criado"});
     }
 })
 
-//Rota para exclusão de usuário
+//Rota para exclusão de usuário qualquer
 router.delete('/delete/:email', validaToken, checkPassEmail, isAdmin, async(req, res) => {
     try{
         const delUser = await helpers.deleteUser(req.params.email)
@@ -50,8 +71,8 @@ router.delete('/delete/:email', validaToken, checkPassEmail, isAdmin, async(req,
     }
 })
 
-//Rota para modificação de um usuário
-router.put('/modifica/:email', async(req, res) => {
+//Rota para modificação de um usuário qualquer
+router.put('/modifica/:email', validaToken, checkPassEmail, isAdmin, async(req, res) => {
     const userModif = req.body;
     const email = req.params.email
     try{
