@@ -3,7 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 var router = express.Router();
 const helpers = require('../helpers/helper');
-const { validaToken, validaCriaUser } = require('../helpers/middlewares');
+const { validaToken, validaCriaUser, isAdmin, checkPassEmail } = require('../helpers/middlewares');
 
 //Rota inicial
 router.get('/', (req, res) => {
@@ -24,8 +24,9 @@ router.post('/registrar', validaCriaUser, async (req, res) => {
 })
 
 //Rota para login
-router.post('/login', async (req, res) => {
+router.post('/login', checkPassEmail, async (req, res) => {
     const {email, senha} = req.body;
+    const user = await helpers.getUserByEmail(email);
     try{
         const secret = process.env.SECRET;
         const token = jwt.sign({
@@ -39,7 +40,7 @@ router.post('/login', async (req, res) => {
 })
 
 //Rota para exclusão de usuário
-router.delete('/delete/:email', validaToken, async(req, res) => {
+router.delete('/delete/:email', validaToken, checkPassEmail, isAdmin, async(req, res) => {
     try{
         const delUser = await helpers.deleteUser(req.params.email)
         return res.status(200).json({msg: "Excluído com sucesso!", user: delUser});
@@ -53,7 +54,6 @@ router.delete('/delete/:email', validaToken, async(req, res) => {
 router.put('/modifica/:email', async(req, res) => {
     const userModif = req.body;
     const email = req.params.email
-
     try{
         finalUser = await helpers.attUser(email, userModif);
         console.log(finalUser);
