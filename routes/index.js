@@ -105,7 +105,23 @@ router.put('/modificaMyself', validaToken, async (req, res) => {
     const decoded = jwt.verify(token, secret);
     const email = decoded.email;
     const userModif = req.body;
-        
+
+    if(req.body.nome && req.body.nome.length < 3){
+        return res.status(422).json({msg: "Nome com tamanho menor que 3"});
+    }
+    if(req.body.email && !req.body.email.includes("@gmail.com")){
+        return res.status(422).json({msg: "O seu usuário deve ter ter a estrutura: nome@gmail.com"});
+    }
+    if(req.body.email.includes("@admin")){
+        return res.status(422).json({msg: "Você não pode criar um usuário administrador"});
+    }
+    if(req.body.idade && req.body.idade < 18){
+        return res.status(422).json({msg: "Idade insuficiente para a plataforma"});
+    }
+    if(req.body.senha && req.body.senha.length < 8){
+        return res.status(422).json({msg: "Senha menor que 8 caracteres"})
+    }
+
     const user = await helpers.attUser(email, userModif);
 
     return res.status(200).json({msg: "Atualizado com sucesso!", user: user});

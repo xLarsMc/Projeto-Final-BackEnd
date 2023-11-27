@@ -76,7 +76,7 @@ async function validaCriaAdmin(req, res, next){
     if(!email){
         return res.status(422).json({msg: "Email não informado "});
     }
-    if(!email.includes("@admin")){
+    if(!email.includes("@admin.com")){
         return res.status(422).json({msg: "O seu usuário administrador deve ter ter a estrutura: nome@admin.com"});
     }
     if(!idade || idade < 18){
