@@ -69,6 +69,19 @@ router.delete('/delete/:email', validaToken, isAdmin, async(req, res) => {
         return res.status(500).json({msg: "Um erro aconteceu!"});
     }
 })
+//Rota para exclusão do própio usuário
+router.delete('/deleteMyself', validaToken, async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    const secret = process.env.SECRET;
+    const decoded = jwt.verify(token, secret);
+    const email = decoded.email;
+        
+    const user = await helpers.deleteUser(email);
+
+    return res.status(200).json({msg: "Excluído com sucesso!", user: user});
+
+})
 
 //Rota para modificação de um usuário qualquer
 router.put('/modifica/:email', validaToken, isAdmin, async(req, res) => {

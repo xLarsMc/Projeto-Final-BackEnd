@@ -33,7 +33,7 @@ async function isAdmin(req, res, next){
             next();
         }
     } catch(error){
-        console.log("du ruim pae", error);
+        console.log("deu ruim pae", error);
         res.status(400).json({msg :"Não é admin"})
     }
 }
