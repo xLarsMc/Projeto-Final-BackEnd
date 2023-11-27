@@ -146,4 +146,9 @@ router.get("/listagem", async(req, res) =>{
     return res.status(200).json({msg: "Lista de usuários!", lista:lista});
 })
 
+//Rota para listagem de usuários específicas (baseados em limite e paginação)
+router.get('/listagem/:limite/:pagina', async(req, res) => {
+    const lista = await helpers.showSomeUsers(req.params.limite, req.params.pagina);
+    return res.status(200).json({msg: "Lista de usuários!", lista:lista});
+})
 module.exports = router;

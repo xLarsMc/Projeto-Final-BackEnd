@@ -18,5 +18,12 @@ module.exports = {
     },
     showAllUsers: async() =>{
         return await userModel.find();
+    },
+    showSomeUsers: async(limite, pagina) => {
+        const qtyIgnore = limite*(pagina-1);
+        const list = await userModel.find();
+        const filteredList = list.slice(qtyIgnore,limite*pagina);
+        console.log(filteredList);
+        return filteredList;
     }
 }
