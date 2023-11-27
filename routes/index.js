@@ -97,6 +97,21 @@ router.put('/modifica/:email', validaToken, isAdmin, async(req, res) => {
     return res.status(200).json({msg: "Atualizado com sucesso!", user: finalUser});
 })
 
+//Rota para modificação do própio usuário
+router.put('/modificaMyself', validaToken, async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    const secret = process.env.SECRET;
+    const decoded = jwt.verify(token, secret);
+    const email = decoded.email;
+    const userModif = req.body;
+        
+    const user = await helpers.attUser(email, userModif);
+
+    return res.status(200).json({msg: "Atualizado com sucesso!", user: user});
+
+})
+
 //Rota para pesquisa de um usuário em específico
 router.get("/busca/:email", async(req, res) => {
     const email = req.params.email;
