@@ -38,8 +38,7 @@ router.post('/registrarAdmin', validaToken, isAdmin, validaCriaAdmin, async (req
 
 //Rota para login
 router.post('/login', checkPassEmail, async (req, res) => {
-    const {email, senha} = req.body;
-    const user = await helpers.getUserByEmail(email);
+    const {email} = req.body;
     try{
         const secret = process.env.SECRET;
         if(email.includes("@admin")){
@@ -61,7 +60,7 @@ router.post('/login', checkPassEmail, async (req, res) => {
 })
 
 //Rota para exclusão de usuário qualquer
-router.delete('/delete/:email', validaToken, checkPassEmail, isAdmin, async(req, res) => {
+router.delete('/delete/:email', validaToken, isAdmin, async(req, res) => {
     try{
         const delUser = await helpers.deleteUser(req.params.email)
         return res.status(200).json({msg: "Excluído com sucesso!", user: delUser});
@@ -72,7 +71,7 @@ router.delete('/delete/:email', validaToken, checkPassEmail, isAdmin, async(req,
 })
 
 //Rota para modificação de um usuário qualquer
-router.put('/modifica/:email', validaToken, checkPassEmail, isAdmin, async(req, res) => {
+router.put('/modifica/:email', validaToken, isAdmin, async(req, res) => {
     const userModif = req.body;
     const email = req.params.email
     try{
