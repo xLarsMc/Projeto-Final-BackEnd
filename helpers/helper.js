@@ -51,5 +51,8 @@ module.exports = {
     },
     getUserPost: async(autor, titulo) => {
         return await postModel.findOne({autor: autor, titulo: titulo})
+    },
+    getUserAllPost: async(autor) => {
+        return await postModel.find({autor:autor})
     }
 }

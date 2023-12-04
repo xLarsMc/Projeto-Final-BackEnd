@@ -162,15 +162,12 @@ router.post('/adicionaPost', validaToken, async (req, res,) => {
     return res.status(200).json({ msg: "Post criado com sucesso", newPost })
 })
 
-router.put('/modificaPost', validaToken, async(req, res)=> {
+router.put('/modificaPost/:titulo', validaToken, async(req, res)=> {
     const authHeader = req.headers['authorization'];
     const email = await helpers.getEmailByAuthHeader(authHeader);
     const user = await helpers.getUserByEmail(email);
-    const postModif = {
-        titulo: req.body.novoTitulo,
-        descricao: req.body.descricao
-    };
-    const existPost = await helpers.getUserPost(user, req.body.titulo)
+    const postModif = req.body;
+    const existPost = await helpers.getUserPost(user, req.params.titulo)
     if (existPost == null) {
         return res.status(422).json({ msg: "Você Não possuí um post com esse título para modificalo", post: existPost });
     }
@@ -178,11 +175,11 @@ router.put('/modificaPost', validaToken, async(req, res)=> {
     return res.status(200).json({msg: "Post atualizado com sucesso", post:modifPost})
 })
 
-router.delete('/deletePost', validaToken, async(req, res) => {
+router.delete('/deletePost/:titulo', validaToken, async(req, res) => {
     const authHeader = req.headers['authorization'];
     const email = await helpers.getEmailByAuthHeader(authHeader);
     const user = await helpers.getUserByEmail(email);
-    const existPost = await helpers.getUserPost(user, req.query.titulo)
+    const existPost = await helpers.getUserPost(user, req.params.titulo)
     if (existPost == null) {
         return res.status(422).json({ msg: "Você Não possuí um post com esse título excluir", post: existPost });
     }
@@ -190,4 +187,28 @@ router.delete('/deletePost', validaToken, async(req, res) => {
     const deletePost = await helpers.deletePost(user, existPost.titulo)
     return res.status(200).json({msg: "Post excluído!", post: deletePost})
 })
+
+router.get('/buscaPost/:titulo', validaToken, async(req, res) => {
+    const authHeader = req.headers['authorization'];
+    const email = await helpers.getEmailByAuthHeader(authHeader);
+    const user = await helpers.getUserByEmail(email);
+    const existPost = await helpers.getUserPost(user, req.params.titulo)
+    console.log(req.params.titulo)
+    if (existPost == null) {
+        return res.status(422).json({ msg: "Você Não possuí um post com esse título. Lembre-se que o titulo deve estar igual, com letras maiúsculas e espaços.", post: existPost });
+    }
+    return res.status(200).json({msg: "Post encontrado!", post: existPost})
+})
+
+router.get('/todosPost', validaToken, async(req, res) => {
+    const authHeader = req.headers['authorization'];
+    const email = await helpers.getEmailByAuthHeader(authHeader);
+    const user = await helpers.getUserByEmail(email);
+    const existPostList = await helpers.getUserAllPost(user)
+    if (!existPostList) {
+        return res.status(422).json({ msg: "Você Não possuí um posts.", post: existPostList });
+    }
+    return res.status(200).json({msg: "Posts encontrado!", post: existPostList})
+})
+
 module.exports = router;
