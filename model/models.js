@@ -7,23 +7,24 @@ const user = new mongoose.Schema({
     senha: String,
 })
 
-const comentarios = new mongoose.Schema({
-    autor: user,
-    conteudo: String
-})
+const userProfile = new mongoose.Schema({
+    autor: {type: user, ref: 'user.email'},
+    bio: String,
+    profilePicture: String
+});
 
 const post = new mongoose.Schema({
-    autor: user,
+    autor: {type: user, ref: 'user.email'},
     titulo: String,
-    comentarios: [comentarios],
+    descricao: String
 })
 
 const userModel = mongoose.model("user", user);
-const comentModel = mongoose.model("comment", comentarios);
+const userProfileModel = mongoose.model("profile", userProfile);
 const postModel = mongoose.model("post", post);
 
 module.exports = {
     userModel,
-    comentModel,
+    userProfileModel,
     postModel
 }
