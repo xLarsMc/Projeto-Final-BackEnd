@@ -40,8 +40,8 @@ module.exports = {
         const post = await postModel.create({autor, titulo, descricao});
         return post;
     },
-    attPost: async(autor, titulo, post) => {
-        return await postModel.updateOne({autor: autor}, {titulo: titulo}, {$set: post});
+    attPost: async(titulo, post) => {
+        return await postModel.updateOne({titulo: titulo}, {$set: post});
     },
     deletePost: async(autor, titulo) => {
         return await postModel.deleteOne({
