@@ -166,12 +166,19 @@ router.put('/modificaPost', validaToken, async(req, res)=> {
     const authHeader = req.headers['authorization'];
     const email = await helpers.getEmailByAuthHeader(authHeader);
     const user = await helpers.getUserByEmail(email);
-    const postModif = req.body;
+    const postModif = {
+        titulo: req.body.novoTitulo,
+        descricao: req.body.descricao
+    };
     const existPost = await helpers.getUserPost(user, req.body.titulo)
     if (existPost == null) {
         return res.status(422).json({ msg: "Você Não possuí um post com esse título para modificalo", post: existPost });
     }
     const modifPost = await helpers.attPost(existPost.titulo,postModif)
     return res.status(200).json({msg: "Post atualizado com sucesso", post:modifPost})
+})
+
+router.delete('/deletPost', validaToken, async(req, res) => {
+
 })
 module.exports = router;
