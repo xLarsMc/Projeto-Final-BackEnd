@@ -190,8 +190,12 @@ router.delete('/deletePost/:titulo', validaToken, async(req, res) => {
 
 router.get('/buscaPost/:titulo', validaToken, async(req, res) => {
     const authHeader = req.headers['authorization'];
-    const email = await helpers.getEmailByAuthHeader(authHeader);
-    const user = await helpers.getUserByEmail(email);
+    if(req.query.email){
+        var user = await helpers.getUserByEmail(req.query.email);
+    } else{
+        const email = await helpers.getEmailByAuthHeader(authHeader);
+        var user = await helpers.getUserByEmail(email);
+    }
     const existPost = await helpers.getUserPost(user, req.params.titulo)
     console.log(req.params.titulo)
     if (existPost == null) {
@@ -202,8 +206,12 @@ router.get('/buscaPost/:titulo', validaToken, async(req, res) => {
 
 router.get('/todosPost', validaToken, async(req, res) => {
     const authHeader = req.headers['authorization'];
-    const email = await helpers.getEmailByAuthHeader(authHeader);
-    const user = await helpers.getUserByEmail(email);
+    if(req.query.email){
+        var user = await helpers.getUserByEmail(req.query.email);
+    } else{
+        const email = await helpers.getEmailByAuthHeader(authHeader);
+        var user = await helpers.getUserByEmail(email);
+    }
     const existPostList = await helpers.getUserAllPost(user)
     if (!existPostList) {
         return res.status(422).json({ msg: "Você Não possuí um posts.", post: existPostList });

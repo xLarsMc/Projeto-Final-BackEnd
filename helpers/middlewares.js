@@ -100,7 +100,6 @@ async function checkPassEmail (req, res, next){
     next();
 }
 
-
 module.exports = {
     validaToken,
     validaCriaUser,
