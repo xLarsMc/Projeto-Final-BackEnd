@@ -260,5 +260,19 @@ router.delete('/deleteProfile', validaToken, async(req, res) => {
     return res.status(200).json({msg: "Profile excluído!", deleteProfile})
 })
 
+router.get('/buscaProfile', validaToken, async(req, res) => {
+    const authHeader = req.headers['authorization'];
+    if(req.query.email){
+        var user = await helpers.getUserByEmail(req.query.email);
+    } else{
+        const email = await helpers.getEmailByAuthHeader(authHeader);
+        var user = await helpers.getUserByEmail(email);
+    }
+    const existProfile = await helpers.getUserProfile(user)
+    if (existProfile == null) {
+        return res.status(422).json({ msg: " O usuário que está buscando não possuí um perfil", existProfile });
+    }
+    return res.status(200).json({msg: "Post encontrado!", existProfile})
+})
 
 module.exports = router;
