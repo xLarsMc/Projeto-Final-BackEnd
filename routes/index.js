@@ -275,4 +275,35 @@ router.get('/buscaProfile', validaToken, async(req, res) => {
     return res.status(200).json({msg: "Post encontrado!", existProfile})
 })
 
+//Rota install
+router.get('/install', async(req, res) => {
+    try{
+        user1 = helpers.newUser("Leandro N", 19, "leandro@gmail.com", "123456789")
+        user2 = helpers.newUser("Adriano R", 30, "rivolli@admin.com", "123456789")
+        user3 = helpers.newUser("Victor M", 20, "victor@gmail.com", "123456789")
+        user4 = helpers.newUser("Matheus K", 19, "Kodi@gmail.com", "123456789")
+        user5 = helpers.newUser("Mauriciao", 22, "Mauriciao@gmail.com", "123456789")
+
+        postUser1 = helpers.newPost(user1, "post1 - usuário 1", "descricao1 - usuário 1");
+        postUser11 = helpers.newPost(user1, "post2 - usuário 1", "descricao2 - usuário 1");
+        postUser2 = helpers.newPost(user2, "post1 - usuário 2", "descricao1 - usuário 2");
+        postUser22 = helpers.newPost(user2, "post2 - usuário 2", "descricao2 - usuário 2");
+        postUser3 = helpers.newPost(user3, "post1 - usuário 3", "descricao1 - usuário 3");
+        postUser33 = helpers.newPost(user3, "post2 - usuário 3", "descricao2 - usuário 3");
+        postUser4 = helpers.newPost(user4, "post1 - usuário 4", "descricao1 - usuário 4");
+        postUser44 = helpers.newPost(user4, "post2 - usuário 4", "descricao2 - usuário 4");
+        postUser5 = helpers.newPost(user5, "post1 - usuário 5", "descricao1 - usuário 5");
+        postUser55 = helpers.newPost(user5, "post2 - usuário 5", "descricao2 - usuário 5");
+
+        userProfile1 = helpers.newProfile(user1, "bio do usuário 1", "foto de perfil do usuário 1");
+        userProfile2 = helpers.newProfile(user2, "bio do usuário 2", "foto de perfil do usuário 2");
+        userProfile3 = helpers.newProfile(user3, "bio do usuário 3", "foto de perfil do usuário 3");
+        userProfile4 = helpers.newProfile(user4, "bio do usuário 4", "foto de perfil do usuário 4");
+        userProfile5 = helpers.newProfile(user5, "bio do usuário 5", "foto de perfil do usuário 5");
+        return res.status(200).json({msg: "Usuários padrões para preenchimento do banco criado! - Usuário admin: rivolli@admin.com senha: 123456789"})
+    } catch(error){
+        console.log("Deu ruim ", error)
+        return res.status(422).json({msg: "Um erro aconteceu"});
+    }
+})
 module.exports = router;
