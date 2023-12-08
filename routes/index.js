@@ -147,7 +147,7 @@ router.get('/listagem/:limite/:pagina', async (req, res) => {
     return res.status(200).json({ msg: "Lista de usuários!", lista: lista });
 })
 
-//CRUD para o userProfile
+//CRUD para o post
 router.post('/adicionaPost', validaToken, async (req, res,) => {
     const authHeader = req.headers['authorization'];
     const email = await helpers.getEmailByAuthHeader(authHeader);
@@ -218,5 +218,32 @@ router.get('/todosPost', validaToken, async(req, res) => {
     }
     return res.status(200).json({msg: "Posts encontrado!", post: existPostList})
 })
+//CRUD para o userProfile
+router.post('/adicionaProfile', validaToken, async (req, res,) => {
+    const authHeader = req.headers['authorization'];
+    const email = await helpers.getEmailByAuthHeader(authHeader);
+    const user = await helpers.getUserByEmail(email);
+    const { bio, profilePicture } = req.body;
+    const existProfile = await helpers.getUserProfile(user)
+    console.log(existProfile)
+    if (existProfile != null) {
+        return res.status(422).json({ msg: "Você já possuí um perfil. Você podê modificá-lo.", existProfile });
+    }
+    const newProfile = await helpers.newProfile(user, bio, profilePicture)
+    //console.log(newProfile)
+    return res.status(200).json({ msg: "Perfil criado com sucesso", newProfile })
+})
 
+router.put('/modificaProfile', validaToken, async(req, res)=> {
+    const authHeader = req.headers['authorization'];
+    const email = await helpers.getEmailByAuthHeader(authHeader);
+    const user = await helpers.getUserByEmail(email);
+    const profileModif = req.body;
+    const existProfile = await helpers.getUserProfile(user)
+    if (existProfile == null) {
+        return res.status(422).json({ msg: "Você Não possuí um post com esse título para modificalo", existProfile });
+    }
+    const modifProfile = await helpers.attProfile(user, profileModif)
+    return res.status(200).json({msg: "Post atualizado com sucesso", modifProfile})
+})
 module.exports = router;

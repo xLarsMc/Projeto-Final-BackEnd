@@ -56,20 +56,19 @@ module.exports = {
         return await postModel.find({autor:autor})
     },
     //Função para profiles
-    newPost: async (autor, titulo, descricao) => {
-        const post = await postModel.create({autor, titulo, descricao});
-        return post;
+    newProfile: async (autor, bio, profilePicture) => {
+        const profile = await userProfileModel.create({autor, bio, profilePicture});
+        return profile;
     },
-    attPost: async(titulo, post) => {
-        return await postModel.updateOne({titulo: titulo}, {$set: post});
+    attProfile: async(autor, profile) => {
+        return await userProfileModel.updateOne({autor: autor}, {$set: profile});
     },
-    deletePost: async(autor, titulo) => {
-        return await postModel.deleteOne({
-            autor: autor,
-            titulo: titulo
+    deleteProfile: async(autor) => {
+        return await userProfileModel.deleteOne({
+            autor: autor
         })
     },
-    getUserPost: async(autor, titulo) => {
-        return await postModel.findOne({autor: autor, titulo: titulo})
+    getUserProfile: async(autor) => {
+        return await userProfileModel.findOne({autor: autor})
     }
 }
