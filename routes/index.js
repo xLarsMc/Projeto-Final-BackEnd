@@ -241,9 +241,24 @@ router.put('/modificaProfile', validaToken, async(req, res)=> {
     const profileModif = req.body;
     const existProfile = await helpers.getUserProfile(user)
     if (existProfile == null) {
-        return res.status(422).json({ msg: "Você Não possuí um post com esse título para modificalo", existProfile });
+        return res.status(422).json({ msg: "Você Não possuí um profile para modificalo", existProfile });
     }
     const modifProfile = await helpers.attProfile(user, profileModif)
-    return res.status(200).json({msg: "Post atualizado com sucesso", modifProfile})
+    return res.status(200).json({msg: "Profile atualizado com sucesso", modifProfile})
 })
+
+router.delete('/deleteProfile', validaToken, async(req, res) => {
+    const authHeader = req.headers['authorization'];
+    const email = await helpers.getEmailByAuthHeader(authHeader);
+    const user = await helpers.getUserByEmail(email);
+    const existProfile = await helpers.getUserProfile(user)
+    if (existProfile == null) {
+        return res.status(422).json({ msg: "Você Não possuí um profile para excluir", existProfile});
+    }
+
+    const deleteProfile = await helpers.deleteProfile(user)
+    return res.status(200).json({msg: "Profile excluído!", deleteProfile})
+})
+
+
 module.exports = router;
