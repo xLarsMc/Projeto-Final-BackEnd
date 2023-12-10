@@ -86,4 +86,7 @@ module.exports = {
         const filteredList = list.slice(qtyIgnore,limite*pagina);
         return filteredList;
     },
+    getAllProfile: async() => {
+        return await userProfileModel.find();
+    }
 }

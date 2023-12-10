@@ -219,6 +219,11 @@ router.get('/todosPost', validaToken, async(req, res) => {
     return res.status(200).json({msg: "Posts encontrado!", post: existPostList})
 })
 
+router.get("/todosPostAPI", async (req, res) => {
+    const lista = await helpers.getAllPost();
+    return res.status(200).json({ msg: "Lista de posts!", lista: lista });
+})
+
 router.get('/listagemPost/:limite/:pagina', async (req, res) => {
     const lista = await helpers.showSomePosts(req.params.limite, req.params.pagina);
     return res.status(200).json({ msg: "Lista de posts!", lista: lista });
@@ -278,6 +283,11 @@ router.get('/buscaProfile', validaToken, async(req, res) => {
         return res.status(422).json({ msg: " O usuário que está buscando não possuí um perfil", existProfile });
     }
     return res.status(200).json({msg: "Profile encontrado!", existProfile})
+})
+
+router.get("/todosProfileAPI", async (req, res) => {
+    const lista = await helpers.getAllProfile();
+    return res.status(200).json({ msg: "Lista de profiles!", lista: lista });
 })
 
 router.get('/listagemProfile/:limite/:pagina', async (req, res) => {
