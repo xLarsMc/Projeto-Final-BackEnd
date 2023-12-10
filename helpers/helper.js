@@ -55,6 +55,15 @@ module.exports = {
     getUserAllPost: async(autor) => {
         return await postModel.find({autor:autor})
     },
+    getAllPost: async() => {
+        return await postModel.find();
+    },
+    showSomePosts: async(limite, pagina) => {
+        const qtyIgnore = limite*(pagina-1);
+        const list = await postModel.find();
+        const filteredList = list.slice(qtyIgnore,limite*pagina);
+        return filteredList;
+    },
     //Função para profiles
     newProfile: async (autor, bio, profilePicture) => {
         const profile = await userProfileModel.create({autor, bio, profilePicture});
@@ -70,5 +79,11 @@ module.exports = {
     },
     getUserProfile: async(autor) => {
         return await userProfileModel.findOne({autor: autor})
-    }
+    },
+    showSomeProfile: async(limite, pagina) => {
+        const qtyIgnore = limite*(pagina-1);
+        const list = await userProfileModel.find();
+        const filteredList = list.slice(qtyIgnore,limite*pagina);
+        return filteredList;
+    },
 }

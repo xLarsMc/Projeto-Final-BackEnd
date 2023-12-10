@@ -218,6 +218,11 @@ router.get('/todosPost', validaToken, async(req, res) => {
     }
     return res.status(200).json({msg: "Posts encontrado!", post: existPostList})
 })
+
+router.get('/listagemPost/:limite/:pagina', async (req, res) => {
+    const lista = await helpers.showSomePosts(req.params.limite, req.params.pagina);
+    return res.status(200).json({ msg: "Lista de posts!", lista: lista });
+})
 //CRUD para o userProfile
 router.post('/adicionaProfile', validaToken, async (req, res,) => {
     const authHeader = req.headers['authorization'];
@@ -272,9 +277,19 @@ router.get('/buscaProfile', validaToken, async(req, res) => {
     if (existProfile == null) {
         return res.status(422).json({ msg: " O usuário que está buscando não possuí um perfil", existProfile });
     }
-    return res.status(200).json({msg: "Post encontrado!", existProfile})
+    return res.status(200).json({msg: "Profile encontrado!", existProfile})
 })
 
+router.get('/listagemProfile/:limite/:pagina', async (req, res) => {
+    const lista = await helpers.showSomeProfile(req.params.limite, req.params.pagina);
+    return res.status(200).json({ msg: "Lista de posts!", lista: lista });
+})
+
+//Rota cálculo tamanho desc
+router.get('/tamPost', async(req, res) => {
+    listaPosts = await helpers.getAllPost()
+    return res.json({listaPosts});
+})
 //Rota install
 router.get('/install', async(req, res) => {
     try{
