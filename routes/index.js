@@ -295,10 +295,27 @@ router.get('/listagemProfile/:limite/:pagina', async (req, res) => {
     return res.status(200).json({ msg: "Lista de posts!", lista: lista });
 })
 
-//Rota cálculo tamanho desc
-router.get('/tamPost', async(req, res) => {
-    listaPosts = await helpers.getAllPost()
-    return res.json({listaPosts});
+//Rota para buscar posts e perfis baseado em qualquer palavra
+router.get('/buscaPostProf/:pesquisa', async(req, res) => {
+    const pesquisa = req.params.pesquisa.toLowerCase().trim();
+    const profiles = await helpers.getAllProfile();
+    const post = await helpers.getAllPost();
+    var searchedProfiles = [];
+    var searchedPosts = [];
+    for(i = 0; i < profiles.length; i++){
+        if(profiles[i].bio.toLowerCase().trim().includes(pesquisa)){
+            searchedProfiles.push(profiles[i]);
+        }
+    }
+    for(i = 0; i < post.length; i++){
+        if(post[i].titulo.toLowerCase().trim().includes(pesquisa) || post[i].descricao.toLowerCase().trim().includes(pesquisa)){
+            searchedPosts.push(post[i]);
+        }
+    }
+    if(searchedPosts.length == 0 && searchedProfiles.length == 0){
+        return res.status(200).json({msg: "Nenhum perfil ou post foi encontrado baseado na sua pesquisa."})
+    }
+    return res.status(200).json({msg: "Posts e perfis que tenham a palavra pesquisada:", posts: searchedPosts, profiles: searchedProfiles})
 })
 //Rota install
 router.get('/install', async(req, res) => {
