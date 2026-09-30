@@ -1,3 +1,24 @@
 # Projeto-Final-BackEnd
-Projeto final da disciplina de Web Back-End. Desenvolvimento de uma API em Node.JS utilizando artefatos como: Autenticação via JWT, utilização e manipulação de banco de dados não relacional (MongoDB), documentação
-via Swagger das rotas criadas e muito mais. API para sustentar a aplicação web de um blog, contando com rotas protegidas, usuários normais, administradores, entre outros.
+
+Final project of the Web Back-End course: a **Node.js / Express** REST API for a blog application.
+
+## Features
+
+- Authentication with **JWT**; protected routes.
+- Roles: regular users and administrators.
+- **MongoDB** persistence with Mongoose models.
+- API documentation with **Swagger** (`swagger.js` / `swagger_doc.json`).
+
+## Structure
+
+`model/` (Mongoose schemas), `routes/` (endpoints), `helpers/` (auth and utilities), `app.js` (entry point).
+
+## Running
+
+```bash
+npm install
+# set the MongoDB connection string and JWT secret as environment variables
+npm start
+```
+
+Swagger UI is served by the app once it is running.
